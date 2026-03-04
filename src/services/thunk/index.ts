@@ -1,9 +1,15 @@
 export { fetchGetAllUsers } from './fetchGetAllUsers';
-export { fetchUserListSkills } from './fetchUserListSkills';
 export { fetchSkills } from './fetchSkills';
 export { fetchCity } from './fetchCity';
-export { fetchUpdateSkillLikeApi } from './fetchUpdateSkillLikeApi';
-export { fetchAddNewUserSkill } from './fetchAddNewUserSkill';
+
+
+export {
+  fetchUserListSkills,
+  fetchUpdateSkillLike,
+  fetchAddNewUserSkill,
+  fetchUserSkillById
+} from './fetchUserSkillListThunks'
+
 
 export {
   fetchLoginApi,

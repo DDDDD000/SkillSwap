@@ -24,6 +24,7 @@ import type { TUser } from '@/entities/user';
 import { transformKeysToLowercase } from '@/shared/lib/utils/transformApiKeysToLowercase';
 import type { TUserSkill } from '@/entities/userSkill';
 import type { TSkills } from '@/entities/skills';
+import type { TUserSkillLight } from '@/shared/lib/types';
 
 const URL = import.meta.env.VITE_SUPABASE_URL;
 const APIKEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
@@ -582,7 +583,7 @@ export class Api {
   };
 
   // Запрос на получение всех Предложений навыков
-  getUserListSkillsApi = async (): Promise<TUserSkill[]> => {
+  getUserListSkillsApi = async (): Promise<TUserSkillLight[]> => {
     try {
       const response = await fetch(
         `${this.baseUrl}/${QUERY_ENDPOINTS.getAllUserSkills}`,

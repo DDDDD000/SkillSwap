@@ -14,7 +14,7 @@ export const SkillGallery: React.FC<SkillGalleryProps> = ({
 
   //кол-во спрятанных фото, если больше трех миниатюр
   useEffect(() => {
-    if (thumbsSwiper) {
+    if (thumbsSwiper && images) {
       const totalSlides = thumbsSwiper.slides.length;
       const visibleSlides = 3;
       const hidden = Math.max(0, totalSlides - visibleSlides);

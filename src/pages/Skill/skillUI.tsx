@@ -15,13 +15,15 @@ export const SkillUI: FC<SkillPageUIProps> = ({
   return (
     <div className={styles.container}>
       <div className={styles.teacher_card}>
-        <UserInfoCard user={user}></UserInfoCard>
+        {user &&
+        <UserInfoCard user={user}></UserInfoCard>}
       </div>
       <div className={styles.info_card}>
-        <SkillDetails
+        {skill && <SkillDetails
           skill={skill}
           onSwapClick={onSwapClick}
         ></SkillDetails>
+        }
       </div>
       <div className={styles.sugestions_content}>
         <CardCarouselUI cards={suggestionCards} title={'Похожие предложения'}/>

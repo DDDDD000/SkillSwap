@@ -8,6 +8,16 @@
   max-height: 324px;
 }
 
+.container_empty {
+  @include border-radius;
+  background-image: url('../../assets/img/no-image.jpg');
+  background-repeat: no-repeat;
+  background-position: center;
+  object-fit: contain;
+  min-width: 464px;
+  min-height: 324px;
+}
+
 .main-image {
   max-width: 324px;
 

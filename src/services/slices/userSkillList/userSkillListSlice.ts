@@ -2,11 +2,12 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import type { TUserSkill } from '@/entities/userSkill';
 import { createSlice, isAnyOf } from '@reduxjs/toolkit';
 import { SLICE_NAMES, requestStatus } from '@constants';
-import type { TRequestStatus } from '@types';
+import type { TRequestStatus, TUserSkillLight } from '@types';
 import {
-  fetchUpdateSkillLikeApi,
+  fetchUpdateSkillLike,
   fetchUserListSkills,
-  fetchAddNewUserSkill
+  fetchAddNewUserSkill,
+  fetchUserSkillById
 } from '@thunks';
 import type { TlikeData } from '@/api/types';
 
@@ -37,7 +38,7 @@ export const userSkillListSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(
-        fetchUpdateSkillLikeApi.fulfilled,
+        fetchUpdateSkillLike.fulfilled,
         (state, action: PayloadAction<TlikeData>) => {
           const { skillId, likes } = action.payload;
           // Находим навык в массиве и обновляем его лайки
@@ -47,6 +48,8 @@ export const userSkillListSlice = createSlice({
               state.userSkillList[skillIndex].likes = likes;
             }
           }
+          state.requestStatus = requestStatus.SUCCESS
+          state.error= null;
         }
       )
       .addCase(
@@ -54,35 +57,57 @@ export const userSkillListSlice = createSlice({
         (state, action: PayloadAction<TUserSkill>) => {
           const newSkill = action.payload;
           state.userSkillList?.push(newSkill)
+          state.requestStatus = requestStatus.SUCCESS
+          state.error= null;
         }
       )
-      // Общая обработка для всех pending thunk
-      .addMatcher(
-        isAnyOf(
-          fetchUserListSkills.pending,fetchAddNewUserSkill.pending
-        ),
-        (state) => {
-          state.requestStatus = requestStatus.LOADING;
-          state.error = null;
-        }
-      )
-      // Общая обработка для fulfilled
-      .addMatcher(
-        isAnyOf(fetchUserListSkills.fulfilled),
-        (state, action: PayloadAction<TUserSkill[]>) => {
+      .addCase(fetchUserListSkills.fulfilled,
+        (state, action: PayloadAction<TUserSkillLight[]>) => {
           state.requestStatus = requestStatus.SUCCESS;
           const userSkillList = action.payload;
           if (Array.isArray(userSkillList)){
-            state.userSkillList = userSkillList
+            const userSkillListImagesEmpty:TUserSkill[] =
+              userSkillList.map(skill => {return {...skill, images:[]}});
+            state.userSkillList = userSkillListImagesEmpty;
             state.error = null;
           }else{
             state.error = 'Неверный тип данных';
           }
         }
       )
+      .addCase(
+        fetchUserSkillById.fulfilled,
+        (state, action: PayloadAction<TUserSkill>) => {
+          const skill = action.payload;
+          // Находим навык в массиве и заменяем его на новый уже с фото
+          if (state.userSkillList){
+            const skillIndex = state.userSkillList.findIndex(s => s._id === skill._id);
+            state.userSkillList[skillIndex]=skill;
+          }
+          state.requestStatus = requestStatus.SUCCESS
+          state.error= null;
+        }
+      )
+      // Общая обработка для всех pending thunk
+      .addMatcher(
+        isAnyOf(
+          fetchUserListSkills.pending,
+          fetchAddNewUserSkill.pending,
+          fetchUserSkillById.pending
+        ),
+        (state) => {
+          state.requestStatus = requestStatus.LOADING;
+          state.error = null;
+        }
+      )
       // Общая обработка для всех остальных rejected
       .addMatcher(
-        isAnyOf(fetchUserListSkills.rejected, fetchAddNewUserSkill.rejected),
+        isAnyOf(
+          fetchUserListSkills.rejected,
+          fetchAddNewUserSkill.rejected,
+          fetchUpdateSkillLike.rejected,
+          fetchUserSkillById.rejected
+        ),
         (state, action) => {
           state.requestStatus = requestStatus.ERROR;
           if (action.error.message) {

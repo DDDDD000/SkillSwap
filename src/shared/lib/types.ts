@@ -15,6 +15,8 @@ export type TSetfirstStepForm = {
   password: string;
 }
 
+export type TUserSkillLight= Omit<TUserSkill,'images'>;
+
 export type TSetSecondStepForm = {
   avatarPic: string,
   name: string,

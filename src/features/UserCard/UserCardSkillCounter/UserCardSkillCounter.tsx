@@ -27,7 +27,7 @@ export const UserCardSkillCounter: React.FC<TUserCardSkillCounterProps> = ({
   onMouseLeave={handleMouseLeave}
   className={styles.counter}>+{counter}
   {showSkills&& slicedSkills && <ul className={styles.show_skills}>{
-   slicedSkills.map(item => (<li className={styles.list_item}>{item.subCategory}</li>))
+   slicedSkills.map((item, index) => (<li key ={index} className={styles.list_item}>{item.subCategory}</li>))
     }</ul>}
   </span>;
 };

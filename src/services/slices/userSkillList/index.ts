@@ -1,15 +1,17 @@
 import userSkillListSlice from './userSkillListSlice';
 import {
-  fetchUpdateSkillLikeApi,
+  fetchUpdateSkillLike,
   fetchUserListSkills,
-  fetchAddNewUserSkill
+  fetchAddNewUserSkill,
+  fetchUserSkillById
 } from '@thunks';
 
 export const userSkillListActions = {
   ...userSkillListSlice.actions,
   fetchUserListSkills,
-  fetchUpdateSkillLikeApi,
-  fetchAddNewUserSkill
+  fetchUpdateSkillLike,
+  fetchAddNewUserSkill,
+  fetchUserSkillById
 };
 export const userSkillListSelectors = userSkillListSlice.selectors;
 

@@ -1,43 +1,48 @@
-import { useAppSelector } from "@/services/hooks";
-import {  userSkillListSlice } from "@/services/slices";
-import { useEffect, useState, type FC } from "react";
+import { useAppSelector, useDispatchedActions } from "@/services/hooks";
+import { useEffect, useRef, useState, type FC } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { SkillUI } from "./skillUI";
 import { selectSwapCards } from "@/services/selectors/swapCardSelector";
 import { Preloader } from "@/shared/ui/preloader";
 import { userSelectors } from "@/services/slices/user";
-import { AppRoutes } from "@/shared/lib/constants";
+import { AppRoutes, requestStatus } from "@/shared/lib/constants";
 import { SkillActionModal } from "@/widgets/skillActionModal";
 import { Icon } from "@/shared/ui/Icon";
+import { userSkillListActions, userSkillListSelectors } from "@/services/slices/userSkillList";
+import { userListSelectors } from "@/services/slices/userList";
 
 export const Skill: FC = () => {
+  const { fetchUserSkillById } = useDispatchedActions(userSkillListActions);
+  const isImagesLoading = useAppSelector(userSkillListSelectors.selectUserSkillListStatus);
+  const isUserLoading = useAppSelector(userSelectors.selectUserStatus);
+  const isSkillsLoading = useAppSelector(userListSelectors.selectUserListStatus);
   const [showModal, setShowModal ] = useState(false);
   const location = useLocation();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const isImagesLoadedRef = useRef(false);
   const { id } = useParams();
+  // пользователь
   const currentUser = useAppSelector(userSelectors.selectUser);
-
   const cards = useAppSelector(selectSwapCards);
-
-  const skills = useAppSelector(userSkillListSlice.selectors.selectSkillUserList);
-  const skill = skills?.find((skill) => skill._id === id);
-
-  const userCard = cards?.find((card) => card.user._id === skill?.userId);
-
+  // ищем карточку выбранного юзера по id из параметра
+  const userCard = cards?.find((card) => card.skill._id === id);
   const userSkill = userCard?.skill;
   const user = userCard?.user;
 
   //сортировка по похожим предложениям
-
   const targetSuggestion = userCard?.skill.category;
-
   const matching = cards.filter(item => item.skill.category=== targetSuggestion);
   const nonMatching = cards.filter(item => item.skill.category !== targetSuggestion);
-  const suggestionCards = [...matching, ...nonMatching];
+  const suggestionCards = [...matching, ...nonMatching]; //порядо снчала ролевантные
 
-  if (!user || !userSkill) {
-    return <Preloader />;
-  }
+  //Запрашиваем фото для конкретной карточки (если пусто то запрос с кешированем в слайс)
+  useEffect(() => {
+    if (userSkill)
+    if (id && !isImagesLoadedRef.current && userSkill.images.length === 0) {
+      isImagesLoadedRef.current = true // Сразу ставим флаг
+      fetchUserSkillById(id)
+    }
+  }, [id, userSkill?.images.length]);
 
   const handleOnClose = ()=>{
     setShowModal(false);
@@ -51,9 +56,24 @@ export const Skill: FC = () => {
     if(!currentUser){
       navigate(AppRoutes.Login,{state: { from: location.pathname}})
     }else{
-      handleOnOpen()
+      handleOnOpen();
     }
   }
+
+  //если в поисковую строку ввести несуществующий id (или не найдена карточка в базе то редирект)
+  // Но проверка сработает только после загрузки юзеров и скилов!Пэтому статусы загрузки важны.
+  useEffect(()=>{
+    if (
+      isUserLoading === requestStatus.SUCCESS &&
+      isSkillsLoading === requestStatus.SUCCESS &&
+      userCard === undefined
+    )
+    navigate('/*',{replace:true});
+  },[userCard,isUserLoading,isSkillsLoading])
+
+   if (!user || !userSkill || isImagesLoading=== requestStatus.LOADING)
+     return <Preloader />
+
 
   return (
     <>
