@@ -1,73 +1,56 @@
-# React + TypeScript + Vite
+# SkillSwap — Платформа для обмена опытом и навыками
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+SkillSwap — это веб-платформа, где люди могут делиться своими знаниями и находить единомышленников для взаимного обучения. Хотите научиться играть на гитаре и готовы обучить кого-то программированию? SkillSwap поможет найти идеального партнера!
 
-Currently, two official plugins are available:
+## ✨ Возможности
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Регистрация и профиль пользователя** — создайте профиль, расскажите о себе
+- **Добавление навыков** — укажите, чему вы можете научить и что хотите изучить
+- **Поиск партнеров по обмену опытом** — находите людей с нужными вам навыками
+- **Фильтрация и сортировка анкет** — находите людей с нужными вам навыками
+- **Система заявок** — отправляйте запросы на обмен опытом
+- **Рейтинг** — оценивайте пользователей после завершения обмена
 
-## React Compiler
+## 🛠 Технологический стек
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Frontend
+- **React 18** — библиотека для пользовательских интерфейсов
+- **TypeScript** — типизация для надежного кода
+- **Redux Toolkit** — управление состоянием приложения
+- **React Router DOM** — навигация
+- **SCSS Modules** — стилизация компонентов
+- **React Dropzone** — загрузка изображений
+- **Vite** — сборка проекта
 
-## Expanding the ESLint configuration
+### Backend (API)
+- **Supabase API** — взаимодействие с сервером
+- **LocalStorage** — временное хранение данных формы
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+| Путь | Описание |
+|------|----------|
+| `/` | Главная страница |
+| `/login` | Страница входа |
+| `register` | Корневой путь регистрации |
+| `/register/account` | Шаг 1: Создание аккаунта |
+| `/register/personal` | Шаг 2: Личные данные и навыки (чему хотите научиться)|
+| `/register/skill` | Шаг 3: Навыки (чему хотите научить других) ||
+| `/profile` | Профиль текущего пользователя |
+| `/profile/favourites` | Избранное пользователя |
+| `/skill/:id` | Детальная страница навыка|
+| `/error` | Страница ошибки сервера|
+| `*` | Страница не найдена|
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 💻 Установка и запуск
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Требования
+- Node.js 18+
+- npm или yarn
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+# Установить зависимости
+npm install
+
+# Запустить в режиме разработки
+npm run dev
